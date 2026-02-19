@@ -227,7 +227,7 @@
 
         <h1>Welcome to CodeIgniter <?= CodeIgniter\CodeIgniter::CI_VERSION ?></h1>
 
-        <h2>The Big Ass Latina framework with powerful features</h2>
+        <h2>The Big tits and big Ass Latina Milf by Rifa</h2>
 
     </div>
 
