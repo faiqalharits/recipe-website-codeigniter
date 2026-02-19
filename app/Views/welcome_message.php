@@ -227,7 +227,7 @@
 
         <h1>Welcome to CodeIgniter <?= CodeIgniter\CodeIgniter::CI_VERSION ?></h1>
 
-        <h2>The Big tits and big Ass Latina Milf by Rifa</h2>
+        <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo, consequatur?</h2>
 
     </div>
 
