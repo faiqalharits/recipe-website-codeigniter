@@ -186,7 +186,7 @@
 <div class="grid grid-cols-1 md:grid-cols-4 gap-20 mb-32">
 <div class="col-span-1 md:col-span-2">
 <div class="flex items-center gap-2 mb-10">
-<span class="text-4xl font-bold tracking-tighter text-white italic">FH<span class="text-[var(--gold-accent)]">.</span></span>
+<span class="text-4xl font-bold tracking-tighter text-white italic">FR<span class="text-[var(--gold-accent)]">.</span></span>
 </div>
 <p class="text-stone-500 text-lg font-light max-w-md leading-relaxed mb-12">
                     Redefining home gastronomy through high-definition visual narratives and expert techniques. Join the elite circle of home chefs.
