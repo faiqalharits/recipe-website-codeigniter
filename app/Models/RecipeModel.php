@@ -13,7 +13,7 @@ class RecipeModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [];
-
+  
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
 
