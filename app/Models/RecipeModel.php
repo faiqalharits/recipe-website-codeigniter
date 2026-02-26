@@ -6,41 +6,18 @@ use CodeIgniter\Model;
 
 class RecipeModel extends Model
 {
-    protected $table            = 'recipes';
-    protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = [];
-  
-    protected bool $allowEmptyInserts = false;
-    protected bool $updateOnlyChanged = true;
+    protected $table = 'recipe';
+    protected $primaryKey = 'id_recipe';
+    protected $allowedFields = ['id_user', 'id_category', 'title', 'description', 'image'];
+    protected $useTimestamps = true;
 
-    protected array $casts = [];
-    protected array $castHandlers = [];
-
-    // Dates
-    protected $useTimestamps = false;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
-
-    // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    public function getFullRecipe($id = null) {
+        $builder = $this->db->table($this->table);
+        $builder->select('recipe.*, user.username, category.category_name');
+        $builder->join('user', 'user.id_user = recipe.id_user');
+        $builder->join('category', 'category.id_category = recipe.id_category');
+        
+        if ($id) return $builder->where('id_recipe', $id)->get()->getRowArray();
+        return $builder->get()->getResultArray();
+    }
 }
