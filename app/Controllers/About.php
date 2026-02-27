@@ -5,7 +5,8 @@ namespace App\Controllers;
 class About extends BaseController
 {
     public function index()
-{
-    return view('About/About');
-}
+    {
+        $data['title'] = 'About Us';
+        return view('about/index', $data);
+    }
 }

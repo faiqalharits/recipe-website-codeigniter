@@ -6,18 +6,30 @@ use CodeIgniter\Model;
 
 class RecipeModel extends Model
 {
-    protected $table = 'recipe';
-    protected $primaryKey = 'id_recipe';
-    protected $allowedFields = ['id_user', 'id_category', 'title', 'description', 'image'];
-    protected $useTimestamps = true;
+    protected $table            = 'recipe';
+    protected $primaryKey       = 'id_recipe';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = [
+        'id_user', 'id_category', 'title', 'description', 'image'
+    ];
 
-    public function getFullRecipe($id = null) {
-        $builder = $this->db->table($this->table);
-        $builder->select('recipe.*, user.username, category.category_name');
-        $builder->join('user', 'user.id_user = recipe.id_user');
-        $builder->join('category', 'category.id_category = recipe.id_category');
-        
-        if ($id) return $builder->where('id_recipe', $id)->get()->getRowArray();
-        return $builder->get()->getResultArray();
+    protected $useTimestamps    = true;
+    protected $dateFormat       = 'datetime';
+    protected $createdField     = 'created_at';
+    protected $updatedField     = '';
+
+    // Relasi ke Category
+    public function category()
+    {
+        return $this->belongsTo('App\Models\CategoryModel', 'id_category', 'id_category');
+    }
+
+    // Relasi ke User
+    public function user()
+    {
+        return $this->belongsTo('App\Models\UserModel', 'id_user', 'id_user');
     }
 }

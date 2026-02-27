@@ -1,317 +1,278 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>FR Admin - Recipe Details Manager</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style type="text/tailwindcss">
-        :root {
-            --primary: #f97316;
-            --bg-deep: #0a0a0a;
-            --bg-charcoal: #121212;
-            --glass-bg: rgba(24, 24, 27, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-deep);
-            color: #ffffff;
-        }
-        .serif {
-            font-family: 'Playfair Display', serif;
-        }
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-        }
-        .sidebar-link.active {
-            color: var(--primary);
-            background: rgba(249, 115, 22, 0.1);
-            border-right: 3px solid var(--primary);
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
-</head>
-<body class="flex h-screen overflow-hidden">
-<aside class="w-64 bg-black flex-shrink-0 border-r border-white/5 flex flex-col">
-<div class="p-8 text-center">
-<h1 class="serif text-3xl font-bold tracking-tighter text-[var(--primary)]">FR</h1>
-<p class="text-[10px] tracking-[0.2em] text-white/40 mt-1 uppercase text-center">Food Recipe Elite</p>
-</div>
-<nav class="flex-1 px-4 space-y-1">
-<a class="sidebar-link active flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all" href="<?= base_url('admin') ?>">
-<span class="material-symbols-outlined text-xl">dashboard</span>
-                Dashboard
-            </a>
-<a class="sidebar-link flex items-center gap-3 px-4 py-3 text-white/60 hover:text-white hover:bg-white/5 text-sm font-medium transition-all" href="<?= base_url('admin/users') ?>" >
-<span class="material-symbols-outlined text-xl">group</span>
-                Users
-            </a>
-<a class="sidebar-link flex items-center gap-3 px-4 py-3 text-white/60 hover:text-white hover:bg-white/5 text-sm font-medium transition-all" href="<?= base_url('admin/recipes') ?>">
-<span class="material-symbols-outlined text-xl">restaurant_menu</span>
-                Recipes
-            </a>
-<a class="sidebar-link flex items-center gap-3 px-4 py-3 text-white/60 hover:text-white hover:bg-white/5 text-sm font-medium transition-all" href="<?= base_url('admin/comments') ?>">
-<span class="material-symbols-outlined text-xl">chat_bubble</span>
-                Comments
-            </a>
-<a class="sidebar-link flex items-center gap-3 px-4 py-3 text-white/60 hover:text-white hover:bg-white/5 text-sm font-medium transition-all" href="<?= base_url('admin/favorites') ?>">
-<span class="material-symbols-outlined text-xl">favorite</span>
-                Favorites
-            </a>
-</nav>
-<div class="p-6 border-t border-white/5">
-<a class="flex items-center gap-3 px-4 py-2 text-white/40 hover:text-white text-sm transition-all" href="#">
-<span class="material-symbols-outlined text-xl">logout</span>
-                Sign Out
-            </a>
-</div>
-</aside>
-<main class="flex-1 flex flex-col bg-[var(--bg-charcoal)] overflow-y-auto">
-<header class="h-20 glass-panel border-t-0 border-l-0 border-r-0 px-8 flex items-center justify-between sticky top-0 z-10">
-<div class="flex items-center gap-4 flex-1">
-<div class="relative w-full max-w-md">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/30 text-xl">search</span>
-<input class="w-full bg-white/5 border-white/10 rounded-full py-2 pl-10 pr-4 text-sm focus:ring-[var(--primary)] focus:border-[var(--primary)] text-white placeholder:text-white/30" placeholder="Search recipe details..." type="text"/>
-</div>
-</div>
-<div class="flex items-center gap-6">
-<button class="relative text-white/60 hover:text-white transition-colors">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-0 right-0 w-2 h-2 bg-[var(--primary)] rounded-full border-2 border-[var(--bg-charcoal)]"></span>
-</button>
-<div class="h-8 w-[1px] bg-white/10"></div>
-<div class="flex items-center gap-3">
-<div class="text-right">
-<p class="text-xs font-semibold">Admin User</p>
-<p class="text-[10px] text-white/40">Super Administrator</p>
-</div>
-<img alt="Admin Profile" class="w-10 h-10 rounded-full border border-white/10 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUocqaMNszkB2LvvkeahcVuT-HVMwFgFfye-jZ9gFXS2NcOZ1bTth_lRjmsiwCVuB6gBs-MDljt3gAUTuPWZptR11pzKZ9ZVLhGm-fEx6l_nF7bxy8BrxM-ns83xxeMW8J2D0edVj6cgXJkoOV_m9yexlJlhGsOudyV3li5pIdExHWECTh4Tvd_TM4sqFFA9rdGmzesdZscm73s7hwGHG-SA4xcjWn9BctQ-h98ojDEcDWxI-ue9oYPhHXoUJYQUjkhsr3amt1eQOy"/>
-</div>
-</div>
-</header>
-<div class="p-10 max-w-7xl mx-auto w-full">
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-<div>
-<h2 class="serif text-4xl font-bold tracking-tight mb-2">Recipe Details Manager</h2>
-<p class="text-white/40 text-sm">Fine-tune culinary execution: Manage ingredients, measurements, and cooking steps.</p>
-</div>
-<div class="flex gap-3">
-<button class="bg-white/5 hover:bg-white/10 border border-white/10 transition-all px-6 py-3 rounded-lg font-semibold text-sm flex items-center gap-2">
-<span class="material-symbols-outlined text-xl">download</span>
-                        Export PDF
-                    </button>
-<button class="bg-[var(--primary)] hover:bg-[#ea580c] transition-all px-6 py-3 rounded-lg font-semibold text-sm flex items-center gap-2 shadow-lg shadow-orange-950/20">
-<span class="material-symbols-outlined text-xl">auto_fix_high</span>
-                        Quick Update
-                    </button>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-<div class="glass-panel p-6 rounded-2xl">
-<p class="text-[11px] uppercase tracking-widest text-white/40 mb-1">Total Details Sets</p>
-<p class="serif text-3xl font-bold">1,248</p>
-<div class="mt-4 flex items-center gap-2 text-emerald-400 text-xs">
-<span class="material-symbols-outlined text-sm">trending_up</span>
-<span>12 new today</span>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl">
-<p class="text-[11px] uppercase tracking-widest text-white/40 mb-1">Average Steps</p>
-<p class="serif text-3xl font-bold">8.4</p>
-<div class="mt-4 flex items-center gap-2 text-white/30 text-xs">
-<span class="material-symbols-outlined text-sm">info</span>
-<span>Across all categories</span>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl">
-<p class="text-[11px] uppercase tracking-widest text-white/40 mb-1">Completeness Rate</p>
-<p class="serif text-3xl font-bold">94.2%</p>
-<div class="mt-4 w-full bg-white/5 h-1 rounded-full overflow-hidden">
-<div class="bg-[var(--primary)] h-full w-[94%]"></div>
-</div>
-</div>
-</div>
-<div class="glass-panel rounded-2xl overflow-hidden shadow-2xl">
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="border-b border-white/5 bg-white/[0.01]">
-<th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40 w-24">ID</th>
-<th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40">Recipe &amp; Ingredients</th>
-<th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40">Cooking Steps</th>
-<th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40">Complexity</th>
-<th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40 text-right">Actions</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-white/5">
-<tr class="hover:bg-white/[0.02] transition-colors group">
-<td class="px-8 py-6 text-sm font-medium text-white/30">#001</td>
-<td class="px-8 py-6">
-<div class="flex items-center gap-4 mb-2">
-<div class="h-10 w-10 rounded overflow-hidden flex-shrink-0 border border-white/10">
-<img alt="Truffle Pasta" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm8Tj_q3DGKF8RQtEbAtvWlECdi2YzUCe_3_rlSHBG8gjDO4wUy19pDCfRDaBAYyZeKLmOkDi6-bdUgJvox88PDaNkDj63gIoJr31G5riM5MeNRwFJLYgKNNAWUBi5ofwVaxJLvVZ2Ju5he74DFeO9JZKJOhn91Ui232Y08fRWXtBs6LmUp2NbwQrdrGM5mm1ToFc7iDXHzf2f0XbL5vjcYiswaBoLZF8U4ur_qXZyIM3h7lT7URJkPDMcaRnDDiibqWr-iXHFILBf"/>
-</div>
-<span class="font-medium text-white/90 group-hover:text-white transition-colors">Black Truffle Tagliatelle</span>
-</div>
-<p class="text-xs text-white/40 leading-relaxed max-w-xs truncate">12 Ingredients: Fresh tagliatelle, Black truffle, heavy cream, parmesan...</p>
-</td>
-<td class="px-8 py-6">
-<div class="flex items-center gap-2">
-<span class="text-sm text-white/70">6 Steps</span>
-<span class="text-[10px] text-white/20">•</span>
-<span class="text-xs text-white/40">~25 min total</span>
-</div>
-</td>
-<td class="px-8 py-6">
-<div class="flex gap-1">
-<div class="w-4 h-1 rounded-full bg-[var(--primary)]"></div>
-<div class="w-4 h-1 rounded-full bg-[var(--primary)]"></div>
-<div class="w-4 h-1 rounded-full bg-white/10"></div>
-</div>
-</td>
-<td class="px-8 py-6 text-right">
-<div class="flex items-center justify-end gap-3">
-<button class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white/80 transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">list_alt</span>
-                                            Manage Steps
-                                        </button>
-<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all">
-<span class="material-symbols-outlined text-lg">edit_note</span>
-</button>
-</div>
-</td>
-</tr>
-<tr class="hover:bg-white/[0.02] transition-colors group">
-<td class="px-8 py-6 text-sm font-medium text-white/30">#002</td>
-<td class="px-8 py-6">
-<div class="flex items-center gap-4 mb-2">
-<div class="h-10 w-10 rounded overflow-hidden flex-shrink-0 border border-white/10">
-<img alt="Salmon" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQx2bc-er448odsCDfIgSExb5AFqaQoJxl3ySotHaDqhydI7fiFsa2Co4YEAq3x9k2__0zWjSv2bGZuL-pipMg45wMTnEsppFDnLEBzsPP2JboFZeg1nzefFBx0n7uf4544o6PYs86uTassxB7cohS5sKk4yn-YBUG8Z8jRxkGu6wrsIvKKa7aQHbgvlgQXoR6tK3b4zmdNqCWeLF6c-KmkK9oCxFSYTONRpGEfl9_Q-D3az9iJIRYWqeIbSdfGCYGK2K8BCg27Mc4"/>
-</div>
-<span class="font-medium text-white/90 group-hover:text-white transition-colors">Glazed Miso Salmon</span>
-</div>
-<p class="text-xs text-white/40 leading-relaxed max-w-xs truncate">8 Ingredients: Salmon fillet, Miso paste, Mirin, Soy sauce...</p>
-</td>
-<td class="px-8 py-6">
-<div class="flex items-center gap-2">
-<span class="text-sm text-white/70">4 Steps</span>
-<span class="text-[10px] text-white/20">•</span>
-<span class="text-xs text-white/40">~15 min total</span>
-</div>
-</td>
-<td class="px-8 py-6">
-<div class="flex gap-1">
-<div class="w-4 h-1 rounded-full bg-[var(--primary)]"></div>
-<div class="w-4 h-1 rounded-full bg-white/10"></div>
-<div class="w-4 h-1 rounded-full bg-white/10"></div>
-</div>
-</td>
-<td class="px-8 py-6 text-right">
-<div class="flex items-center justify-end gap-3">
-<button class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white/80 transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">list_alt</span>
-                                            Manage Steps
-                                        </button>
-<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all">
-<span class="material-symbols-outlined text-lg">edit_note</span>
-</button>
-</div>
-</td>
-</tr>
-<tr class="hover:bg-white/[0.02] transition-colors group">
-<td class="px-8 py-6 text-sm font-medium text-white/30">#003</td>
-<td class="px-8 py-6">
-<div class="flex items-center gap-4 mb-2">
-<div class="h-10 w-10 rounded overflow-hidden flex-shrink-0 border border-white/10">
-<img alt="Duck" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlaX9quX3a3Ou2EPcMCH3SYpkhszyFjlPbEK_A4L7m4zabBqu0vksBq6CukqXLGfRENJvxcgr424gW8YJM6SW91mg8gr8YdOKghPv_6ZQHtv3pwi-MhlLbtZJWx1gMXI2U7dqT_IjV3ZNAjc0_gP4rNFnG-TZsEAFp2lZY8VlZqeTdS2asdrJ0sOzffcixZ0v49N5wZ46K2JZdXwdi6nZmjkYjkJlZ6I06RnpGrJlHwTe0Su2m5ZKbC37HFIaEL2Xh6pDqlUdjxIeZ"/>
-</div>
-<span class="font-medium text-white/90 group-hover:text-white transition-colors">Pan-Seared Duck Breast</span>
-</div>
-<p class="text-xs text-white/40 leading-relaxed max-w-xs truncate">15 Ingredients: Duck breast, Orange zest, Grand Marnier, shallots...</p>
-</td>
-<td class="px-8 py-6">
-<div class="flex items-center gap-2">
-<span class="text-sm text-white/70">12 Steps</span>
-<span class="text-[10px] text-white/20">•</span>
-<span class="text-xs text-white/40">~45 min total</span>
-</div>
-</td>
-<td class="px-8 py-6">
-<div class="flex gap-1">
-<div class="w-4 h-1 rounded-full bg-[var(--primary)]"></div>
-<div class="w-4 h-1 rounded-full bg-[var(--primary)]"></div>
-<div class="w-4 h-1 rounded-full bg-[var(--primary)]"></div>
-</div>
-</td>
-<td class="px-8 py-6 text-right">
-<div class="flex items-center justify-end gap-3">
-<button class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white/80 transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">list_alt</span>
-                                            Manage Steps
-                                        </button>
-<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all">
-<span class="material-symbols-outlined text-lg">edit_note</span>
-</button>
-</div>
-</td>
-</tr>
-<tr class="hover:bg-white/[0.02] transition-colors group">
-<td class="px-8 py-6 text-sm font-medium text-white/30">#004</td>
-<td class="px-8 py-6">
-<div class="flex items-center gap-4 mb-2">
-<div class="h-10 w-10 rounded overflow-hidden flex-shrink-0 border border-white/10">
-<img alt="Dessert" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_DuH6YfNjls7how7oXsrV6BCNekcE0K7CcyxqLlqWbQDTicr-z_DDFRgpAeauWoz2oqJxzGFwuPcNJaiyKyXDmpwiTbwoUf2bJe5UtnJ1T-ymk9GaVi2oRkn5x-Pa45rpsdh8lOqati1_-vLETTCVHrS91g6t2mmHrDAnB0Eco0ssg7YekXB7orN1924_xX6s8wOIX7Fm8nf7a59YAjZymdxR4xzxiVwBX_-uVqObahFgk2zsY3_M6Da2pOaQMoaZ2RqoRuZujSjl"/>
-</div>
-<span class="font-medium text-white/90 group-hover:text-white transition-colors">Saffron Poached Pears</span>
-</div>
-<p class="text-xs text-white/40 leading-relaxed max-w-xs truncate">10 Ingredients: Bosc pears, Saffron threads, Dry white wine, Star anise...</p>
-</td>
-<td class="px-8 py-6">
-<div class="flex items-center gap-2">
-<span class="text-sm text-white/70">8 Steps</span>
-<span class="text-[10px] text-white/20">•</span>
-<span class="text-xs text-white/40">~60 min total</span>
-</div>
-</td>
-<td class="px-8 py-6">
-<div class="flex gap-1">
-<div class="w-4 h-1 rounded-full bg-[var(--primary)]"></div>
-<div class="w-4 h-1 rounded-full bg-[var(--primary)]"></div>
-<div class="w-4 h-1 rounded-full bg-white/10"></div>
-</div>
-</td>
-<td class="px-8 py-6 text-right">
-<div class="flex items-center justify-end gap-3">
-<button class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-white/80 transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">list_alt</span>
-                                            Manage Steps
-                                        </button>
-<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all">
-<span class="material-symbols-outlined text-lg">edit_note</span>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="px-8 py-6 flex items-center justify-between border-t border-white/5 bg-white/[0.01]">
-<p class="text-xs text-white/30">Reviewing details for <span class="text-white/60">4</span> active recipes</p>
-<div class="flex items-center gap-2">
-<button class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-medium text-white/60 transition-all">Previous</button>
-<button class="px-4 py-2 bg-[var(--primary)] text-white rounded-lg text-xs font-medium shadow-lg shadow-orange-950/20">1</button>
-<button class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-medium text-white/60 transition-all">2</button>
-<button class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-medium text-white/60 transition-all">Next</button>
-</div>
-</div>
-</div>
-</div>
-</main>
+<?= $this->extend('layout/admin/admin_layout') ?>
 
-</body></html>
+<?= $this->section('title') ?>Recipes Management<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
+
+<!-- Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+    <div>
+        <h2 class="serif text-4xl font-bold tracking-tight mb-2">Recipes Management</h2>
+        <p class="text-white/40 text-sm">Manage all recipes and their details in one place.</p>
+    </div>
+    <button onclick="openAddRecipeModal()" 
+            class="bg-[var(--primary)] hover:bg-[#ea580c] transition-all px-6 py-3 rounded-lg font-semibold text-sm flex items-center gap-2">
+        <span class="material-symbols-outlined text-xl">add</span>
+        Add New Recipe
+    </button>
+</div>
+
+<!-- Recipes Table -->
+<div class="glass-panel rounded-2xl overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-white/5">
+                    <th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40 w-16"></th>
+                    <th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40">ID</th>
+                    <th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40">Image</th>
+                    <th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40">Title</th>
+                    <th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40">Category</th>
+                    <th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40">Author</th>
+                    <th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40">Status</th>
+                    <th class="px-8 py-6 text-[11px] uppercase tracking-[0.2em] font-semibold text-white/40 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                <?php foreach($recipes as $recipe): 
+                    $hasDetails = !empty($recipeDetails[$recipe['id_recipe']] ?? null);
+                ?>
+                <!-- Main Row -->
+                <tr class="hover:bg-white/[0.02] transition-colors group main-row" data-recipe-id="<?= $recipe['id_recipe'] ?>">
+                    <td class="px-8 py-5">
+                        <button onclick="toggleDetails(<?= $recipe['id_recipe'] ?>)" 
+                                class="text-white/40 hover:text-[var(--primary)] transition-colors">
+                            <span class="material-symbols-outlined expand-icon" id="expand-icon-<?= $recipe['id_recipe'] ?>">
+                                expand_more
+                            </span>
+                        </button>
+                    </td>
+                    <td class="px-8 py-5 text-sm font-medium text-white/30">#<?= $recipe['id_recipe'] ?></td>
+                    <td class="px-8 py-5">
+                        <div class="h-12 w-16 rounded-lg overflow-hidden border border-white/10">
+                            <img src="<?= base_url('uploads/recipes/' . ($recipe['image'] ?? 'default.jpg')) ?>" 
+                                 alt="<?= $recipe['title'] ?>" class="w-full h-full object-cover">
+                        </div>
+                    </td>
+                    <td class="px-8 py-5 font-medium text-white/90"><?= $recipe['title'] ?></td>
+                    <td class="px-8 py-5">
+                        <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[11px] font-medium text-white/60">
+                            <?= $recipe['category_name'] ?? 'Uncategorized' ?>
+                        </span>
+                    </td>
+                    <td class="px-8 py-5 text-white/70"><?= $recipe['username'] ?? 'Admin' ?></td>
+                    <td class="px-8 py-5">
+                        <?php if($hasDetails): ?>
+                            <span class="flex items-center gap-1 text-green-400 text-xs">
+                                <span class="material-symbols-outlined text-sm">check_circle</span>
+                                Complete
+                            </span>
+                        <?php else: ?>
+                            <span class="flex items-center gap-1 text-yellow-400 text-xs">
+                                <span class="material-symbols-outlined text-sm">pending</span>
+                                Pending Details
+                            </span>
+                        <?php endif; ?>
+                    </td>
+                    <td class="px-8 py-5 text-right">
+                        <div class="flex items-center justify-end gap-3">
+                            <button onclick="openEditRecipeModal(<?= $recipe['id_recipe'] ?>)" 
+                                    class="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all"
+                                    title="Edit Recipe">
+                                <span class="material-symbols-outlined text-lg">edit</span>
+                            </button>
+                            <button onclick="deleteRecipe(<?= $recipe['id_recipe'] ?>)" 
+                                    class="w-9 h-9 flex items-center justify-center rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all"
+                                    title="Delete Recipe">
+                                <span class="material-symbols-outlined text-lg">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                
+                <!-- Expandable Details Row -->
+                <?= view('layout/admin/dashboard/partials/expandable_row', ['recipe' => $recipe, 'details' => $recipeDetails[$recipe['id_recipe']] ?? null]) ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modals -->
+<?= view('layout/admin/dashboard/modals/add_recipe', ['categories' => $categories]) ?>
+<?= view('layout/admin/dashboard/modals/edit_recipe', ['categories' => $categories]) ?>
+<?= view('layout/admin/dashboard/modals/detail_modal') ?>
+
+<script>
+// Toggle expandable details
+function toggleDetails(recipeId) {
+    const row = document.getElementById('details-row-' + recipeId);
+    const icon = document.getElementById('expand-icon-' + recipeId);
+    
+    row.classList.toggle('expanded');
+    icon.classList.toggle('expanded');
+}
+
+// Open Detail Modal
+function openDetailModal(recipeId) {
+    document.getElementById('detail_recipe_id').value = recipeId;
+    document.getElementById('detailModalTitle').innerText = 'Edit Details for Recipe #' + recipeId;
+    
+    // Load existing details via AJAX
+    fetch('<?= base_url('admin/getRecipeDetails') ?>/' + recipeId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data) {
+                loadIngredients(data.data.ingredients);
+                loadSteps(data.data.steps);
+                document.getElementById('detail_notes').value = data.data.notes || '';
+            } else {
+                // New recipe, empty fields
+                ingredientsList = [];
+                stepsList = [];
+                renderIngredients();
+                renderSteps();
+                document.getElementById('detail_notes').value = '';
+            }
+        });
+    
+    document.getElementById('detailModal').classList.remove('hidden');
+}
+
+function closeDetailModal() {
+    document.getElementById('detailModal').classList.add('hidden');
+}
+
+// Add Recipe Modal
+function openAddRecipeModal() {
+    document.getElementById('addRecipeModal').classList.remove('hidden');
+}
+
+function closeAddRecipeModal() {
+    document.getElementById('addRecipeModal').classList.add('hidden');
+    document.getElementById('addRecipeForm').reset();
+}
+
+// Edit Recipe Modal
+function openEditRecipeModal(id) {
+    fetch('<?= base_url('admin/editRecipe') ?>/' + id)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('edit_recipe_id').value = data.data.id_recipe;
+                document.getElementById('edit_title').value = data.data.title;
+                document.getElementById('edit_description').value = data.data.description;
+                document.getElementById('edit_id_category').value = data.data.id_category;
+                document.getElementById('editRecipeModal').classList.remove('hidden');
+            } else {
+                alert('Gagal memuat data: ' + data.message);
+            }
+        });
+}
+
+function closeEditRecipeModal() {
+    document.getElementById('editRecipeModal').classList.add('hidden');
+    document.getElementById('editRecipeForm').reset();
+}
+
+// Submit Add Recipe
+document.getElementById('addRecipeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('<?= base_url('admin/saveRecipe') ?>', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Resep berhasil ditambahkan!');
+            location.reload();
+        } else {
+            if (data.errors) {
+                let errorMsg = 'Validasi gagal:\n';
+                for (let key in data.errors) {
+                    errorMsg += '- ' + data.errors[key] + '\n';
+                }
+                alert(errorMsg);
+            } else {
+                alert('Gagal: ' + data.message);
+            }
+        }
+    });
+});
+
+// Submit Edit Recipe
+document.getElementById('editRecipeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const recipeId = document.getElementById('edit_recipe_id').value;
+    
+    fetch('<?= base_url('admin/updateRecipe') ?>/' + recipeId, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Resep berhasil diupdate!');
+            location.reload();
+        } else {
+            if (data.errors) {
+                let errorMsg = 'Validasi gagal:\n';
+                for (let key in data.errors) {
+                    errorMsg += '- ' + data.errors[key] + '\n';
+                }
+                alert(errorMsg);
+            } else {
+                alert('Gagal: ' + data.message);
+            }
+        }
+    });
+});
+
+// Delete Recipe
+function deleteRecipe(id) {
+    if (confirm('Yakin ingin menghapus resep ini? Semua detail, komentar, dan favorit terkait juga akan dihapus.')) {
+        fetch('<?= base_url('admin/deleteRecipe') ?>/' + id, {
+            method: 'GET'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Resep berhasil dihapus!');
+                location.reload();
+            } else {
+                alert('Gagal: ' + data.message);
+            }
+        });
+    }
+}
+</script>
+
+<style>
+    .expandable-row {
+        display: none;
+        background: rgba(255, 255, 255, 0.02);
+    }
+    .expandable-row.expanded {
+        display: table-row;
+    }
+    .expand-icon {
+        transition: transform 0.2s;
+    }
+    .expand-icon.expanded {
+        transform: rotate(180deg);
+    }
+    .detail-card {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 10px 0;
+    }
+</style>
+
+<?= $this->endSection() ?>

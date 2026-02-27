@@ -4,30 +4,29 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class UserModel extends Model
+class CommentModel extends Model
 {
-    protected $table            = 'user';
-    protected $primaryKey       = 'id_user';
+    protected $table            = 'comment';
+    protected $primaryKey       = 'id_comment';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'username',
-        'email',
-        'password',
-        'role'
+        'id_user',
+        'id_recipe',
+        'content'
     ];
 
     protected $useTimestamps    = true;
     protected $dateFormat       = 'datetime';
     protected $createdField     = 'created_at';
     protected $updatedField     = '';
-
+    
     protected $validationRules  = [
-        'username' => 'required|min_length[3]|is_unique[user.username]',
-        'email'    => 'required|valid_email|is_unique[user.email]',
-        'password' => 'required|min_length[6]'
+        'id_user'   => 'required|numeric',
+        'id_recipe' => 'required|numeric',
+        'content'   => 'required|min_length[3]'
     ];
     protected $validationMessages = [];
     protected $skipValidation   = false;
