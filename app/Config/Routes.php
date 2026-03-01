@@ -85,24 +85,28 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
 
 // ============= API ROUTES =============
 $routes->group('api', function($routes) {
-    // Recipes API
-    $routes->get('recipes', 'Api\RecipeApi::index');
-    $routes->get('recipes/(:num)', 'Api\RecipeApi::show/$1');
-    $routes->post('recipes', 'Api\RecipeApi::create');
-    $routes->put('recipes/(:num)', 'Api\RecipeApi::update/$1');
-    $routes->delete('recipes/(:num)', 'Api\RecipeApi::delete/$1');
+    // Auth (manual)
+    $routes->post('auth/register', 'Api\AuthApi::register');
+    $routes->post('auth/login', 'Api\AuthApi::login');
+    $routes->post('auth/logout', 'Api\AuthApi::logout');
+    $routes->get('auth/me', 'Api\AuthApi::me');
     
-    // Comments API
-    $routes->get('comments', 'Api\CommentApi::index');
-    $routes->get('comments/(:num)', 'Api\CommentApi::show/$1');
-    $routes->post('comments', 'Api\CommentApi::create');
-    $routes->delete('comments/(:num)', 'Api\CommentApi::delete/$1');
+    // Recipes (resource)
+    $routes->resource('recipes', ['controller' => 'Api\RecipeApi','except' => ['new', 'edit']]);
     
-    // Favorites API
-    $routes->get('favorites', 'Api\FavoriteApi::index');
+    // Recipe Details (custom)
+    $routes->get('recipes/(:num)/details', 'Api\RecipeApi::details/$1');
+    $routes->post('recipes/(:num)/details', 'Api\RecipeApi::saveDetails/$1');
+    
+    // Comments (resource)
+    $routes->resource('comments', ['controller' => 'Api\CommentApi','except' => ['new', 'edit']]);
+    
+    // Favorites (custom)
+    $routes->get('favorites/user/(:num)', 'Api\FavoriteApi::userFavorites/$1');
     $routes->post('favorites/toggle', 'Api\FavoriteApi::toggle');
+    $routes->get('favorites/check', 'Api\FavoriteApi::check');
+    $routes->delete('favorites/(:num)', 'Api\FavoriteApi::delete/$1');
     
-    // Users API
-    $routes->get('users', 'Api\UserApi::index');
-    $routes->get('users/(:num)', 'Api\UserApi::show/$1');
+    // Users (resource)
+    $routes->resource('users', ['controller' => 'Api\UserApi','except' => ['new', 'edit']]);
 });
