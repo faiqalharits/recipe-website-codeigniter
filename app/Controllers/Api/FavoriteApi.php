@@ -8,12 +8,12 @@ use App\Models\RecipeModel;
 class FavoriteApi extends BaseApiController
 {
     protected $favoriteModel;
-    
+
     public function __construct()
     {
         $this->favoriteModel = new FavoriteModel();
     }
-    
+
     /**
      * GET /api/favorites/user/{userId} - ADMIN ONLY
      */
@@ -21,17 +21,17 @@ class FavoriteApi extends BaseApiController
     {
         $admin = $this->requireAdmin();
         if (is_array($admin) && isset($admin['status'])) return $admin;
-        
+
         $favorites = $this->favoriteModel
             ->select('favorite.*, recipe.title, recipe.image, recipe.description')
             ->join('recipe', 'recipe.id_recipe = favorite.id_recipe')
             ->where('favorite.id_user', $userId)
             ->orderBy('favorite.created_at', 'DESC')
             ->findAll();
-        
+
         return $this->responseSuccess($favorites);
     }
-    
+
     /**
      * POST /api/favorites/toggle - ADMIN ONLY
      */
@@ -39,30 +39,30 @@ class FavoriteApi extends BaseApiController
     {
         $admin = $this->requireAdmin();
         if (is_array($admin) && isset($admin['status'])) return $admin;
-        
+
         $rules = [
             'id_recipe' => 'required|numeric'
         ];
-        
+
         if (!$this->validate($rules)) {
             return $this->responseError('Validasi gagal', 400, $this->validator->getErrors());
         }
-        
+
         $recipeId = $this->request->getVar('id_recipe');
-        
+
         // Cek apakah resep ada
         $recipeModel = new RecipeModel();
         $recipe = $recipeModel->find($recipeId);
         if (!$recipe) {
             return $this->responseError('Resep tidak ditemukan', 404);
         }
-        
+
         // Cek apakah sudah favorite
         $existing = $this->favoriteModel
             ->where('id_user', $admin['id_user'])
             ->where('id_recipe', $recipeId)
             ->first();
-        
+
         if ($existing) {
             // Hapus dari favorite
             $this->favoriteModel->delete($existing['id_favorite']);
@@ -76,7 +76,7 @@ class FavoriteApi extends BaseApiController
             return $this->responseSuccess(null, 'Resep ditambahkan ke favorit');
         }
     }
-    
+
     /**
      * GET /api/favorites/check - ADMIN ONLY
      */
@@ -84,23 +84,23 @@ class FavoriteApi extends BaseApiController
     {
         $admin = $this->requireAdmin();
         if (is_array($admin) && isset($admin['status'])) return $admin;
-        
+
         $recipeId = $this->request->getGet('recipe');
         if (!$recipeId) {
             return $this->responseError('Parameter recipe diperlukan', 400);
         }
-        
+
         $favorite = $this->favoriteModel
             ->where('id_user', $admin['id_user'])
             ->where('id_recipe', $recipeId)
             ->first();
-        
+
         return $this->responseSuccess([
             'is_favorite' => $favorite ? true : false,
             'id_favorite' => $favorite['id_favorite'] ?? null
         ]);
     }
-    
+
     /**
      * DELETE /api/favorites/{id} - ADMIN ONLY
      */
@@ -108,16 +108,83 @@ class FavoriteApi extends BaseApiController
     {
         $admin = $this->requireAdmin();
         if (is_array($admin) && isset($admin['status'])) return $admin;
-        
+
         $favorite = $this->favoriteModel->find($id);
         if (!$favorite) {
             return $this->responseError('Favorite tidak ditemukan', 404);
         }
-        
+
         if ($this->favoriteModel->delete($id)) {
             return $this->responseSuccess(null, 'Favorite berhasil dihapus');
         }
-        
+
         return $this->responseError('Gagal menghapus favorite', 500);
+    }
+
+    /**
+     * GET /api/favorites/user/{userId}/search - SEARCH FAVORITE USER
+     */
+    /**
+     * GET /api/favorites/user/{userId}/search - SEARCH FAVORITE USER
+     */
+    public function searchUserFavorites($userId = null)
+    {
+        $admin = $this->requireAdmin();
+        if (is_array($admin) && isset($admin['status'])) return $admin;
+
+        $keyword = $this->request->getGet('q');
+        if (!$keyword) {
+            return $this->responseError('Parameter "q" diperlukan', 400);
+        }
+
+        $favorites = $this->favoriteModel
+            ->select('favorite.*, recipe.title, recipe.image, recipe.description')
+            ->join('recipe', 'recipe.id_recipe = favorite.id_recipe')
+            ->where('favorite.id_user', $userId)
+            ->groupStart()
+            ->like('recipe.title', $keyword)
+            ->orLike('recipe.description', $keyword)
+            ->groupEnd()
+            ->orderBy('favorite.created_at', 'DESC')
+            ->findAll();
+
+        return $this->responseSuccess([
+            'user_id' => $userId,
+            'keyword' => $keyword,
+            'total' => count($favorites),
+            'data' => $favorites
+        ]);
+    }
+
+    /**
+     * GET /api/favorites/search - SEARCH ALL FAVORITES (Admin Only)
+     */
+    public function searchAllFavorites()
+    {
+        $admin = $this->requireAdmin();
+        if (is_array($admin) && isset($admin['status'])) return $admin;
+
+        $keyword = $this->request->getGet('q');
+        if (!$keyword) {
+            return $this->responseError('Parameter "q" diperlukan', 400);
+        }
+
+        $favorites = $this->favoriteModel
+            ->select('favorite.*, recipe.title, recipe.image, recipe.description, user.username')
+            ->join('recipe', 'recipe.id_recipe = favorite.id_recipe')
+            ->join('user', 'user.id_user = favorite.id_user')
+            ->groupStart()
+            ->like('recipe.title', $keyword)
+            ->orLike('recipe.description', $keyword)
+            ->orLike('user.username', $keyword)
+            ->groupEnd()
+            ->orderBy('favorite.created_at', 'DESC')
+            ->findAll();
+
+        return $this->responseSuccess([
+            'keyword' => $keyword,
+            'total' => count($favorites),
+            'data' => $favorites
+        ]);
     }
 }

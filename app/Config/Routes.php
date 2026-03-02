@@ -103,10 +103,21 @@ $routes->group('api', function($routes) {
     
     // Favorites (custom)
     $routes->get('favorites/user/(:num)', 'Api\FavoriteApi::userFavorites/$1');
+    $routes->get('favorites/user/(:num)/search', 'Api\FavoriteApi::searchUserFavorites/$1');
+    $routes->get('favorites/search', 'Api\FavoriteApi::searchAllFavorites');
     $routes->post('favorites/toggle', 'Api\FavoriteApi::toggle');
     $routes->get('favorites/check', 'Api\FavoriteApi::check');
     $routes->delete('favorites/(:num)', 'Api\FavoriteApi::delete/$1');
     
     // Users (resource)
-    $routes->resource('users', ['controller' => 'Api\UserApi','except' => ['new', 'edit']]);
+    $routes->resource('users', [
+        'controller' => 'Api\UserApi',
+        'except' => ['new', 'edit']
+    ]);
+
+    // Categories (resource)
+    $routes->resource('categories', [
+        'controller' => 'Api\CategoryApi',
+        'except' => ['new', 'edit']
+    ]);
 });
